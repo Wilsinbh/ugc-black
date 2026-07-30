@@ -1,0 +1,134 @@
+{
+  "builtInNodes": [
+    {
+      "type": "VAEDecode"
+    },
+    {
+      "type": "VAEEncode"
+    },
+    {
+      "type": "KSampler"
+    },
+    {
+      "type": "CLIPTextEncode"
+    },
+    {
+      "type": "EmptyLatentImage"
+    },
+    {
+      "type": "KSampler"
+    },
+    {
+      "type": "PreviewImage"
+    },
+    {
+      "type": "CLIPVisionLoader"
+    },
+    {
+      "type": "LoadImage"
+    },
+    {
+      "type": "VAEDecode"
+    },
+    {
+      "type": "CheckpointLoaderSimple"
+    },
+    {
+      "type": "CLIPTextEncode"
+    },
+    {
+      "type": "PreviewImage"
+    }
+  ],
+  "customNodes": {
+    "comfyui-easy-use": {
+      "metadata": {
+        "ver": "1.3.6"
+      },
+      "nodes": [
+        {
+          "type": "easy seed"
+        }
+      ],
+      "registryStatus": true,
+      "hasPublishedVersions": true,
+      "githubUrl": "https://github.com/yolain/ComfyUI-Easy-Use"
+    },
+    "comfyui_ipadapter_plus": {
+      "metadata": {
+        "ver": "2.0.0"
+      },
+      "nodes": [
+        {
+          "type": "IPAdapterInsightFaceLoader"
+        },
+        {
+          "type": "IPAdapterFaceID"
+        },
+        {
+          "type": "IPAdapterUnifiedLoaderFaceID"
+        }
+      ],
+      "registryStatus": true,
+      "hasPublishedVersions": true,
+      "githubUrl": "https://github.com/cubiq/ComfyUI_IPAdapter_plus"
+    },
+    "rgthree-comfy": {
+      "metadata": {
+        "ver": "6b76ee6f2c5a007710b5a16f97c94330d6ecc871",
+        "auxId": "rgthree/rgthree-comfy"
+      },
+      "nodes": [
+        {
+          "type": "Power Lora Loader (rgthree)"
+        }
+      ],
+      "registryStatus": true,
+      "hasPublishedVersions": true,
+      "githubUrl": "https://github.com/rgthree/rgthree-comfy"
+    },
+    "ComfyUI_Comfyroll_CustomNodes": {
+      "metadata": {
+        "ver": "d78b780ae43fcf8c6b7c6505e6ffb4584281ceca"
+      },
+      "nodes": [
+        {
+          "type": "CR Upscale Image"
+        }
+      ],
+      "registryStatus": true,
+      "hasPublishedVersions": false,
+      "githubUrl": "https://github.com/Suzie1/ComfyUI_Comfyroll_CustomNodes"
+    }
+  },
+  "models": [
+    {
+      "type": "clip_vision",
+      "filename": "sd1.5_clipvision.safetensors",
+      "url": "https://huggingface.co/h94/IP-Adapter/resolve/main/models/image_encoder/model.safetensors",
+      "status": "resolved"
+    },
+    {
+      "type": "Unknown",
+      "filename": "4x_NMKD-Superscale-SP_178000_G.pth",
+      "url": "https://huggingface.co/gemasai/4x_NMKD-Superscale-SP_178000_G/resolve/main/4x_NMKD-Superscale-SP_178000_G.pth",
+      "status": "resolved"
+    },
+    {
+      "type": "checkpoints",
+      "filename": "epicrealismXL_vxviLastfameDMD2.safetensors",
+      "url": "https://huggingface.co/wilsinsantos/wsn/resolve/main/epicrealismXL_vxviLastfameDMD2.safetensors",
+      "status": "resolved"
+    }
+  ],
+  "assets": [
+    {
+      "type": "Image",
+      "filename": "VhjmHRgWfYBO1IyTxpfGG_iiffQJwj.png",
+      "providedUrl": "https://cool-anteater-319.convex.cloud/api/storage/26946503-ff60-4ba7-81ba-6c40110cf6e5"
+    }
+  ],
+  "issues": [
+    "Custom nodes with no published version (will git-clone instead): ComfyUI_Comfyroll_CustomNodes"
+  ]
+}

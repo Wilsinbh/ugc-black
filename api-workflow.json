@@ -1,0 +1,304 @@
+{
+  "3": {
+    "inputs": {
+      "model": [
+        "13",
+        0
+      ],
+      "positive": [
+        "6",
+        0
+      ],
+      "negative": [
+        "7",
+        0
+      ],
+      "latent_image": [
+        "5",
+        0
+      ],
+      "seed": 988030729003666,
+      "steps": 5,
+      "cfg": 0.9500000000000001,
+      "sampler_name": "lcm",
+      "scheduler": "exponential",
+      "denoise": 1
+    },
+    "class_type": "KSampler",
+    "_meta": {
+      "title": "KSampler"
+    }
+  },
+  "4": {
+    "inputs": {
+      "ckpt_name": "epicrealismXL_vxviLastfameDMD2.safetensors"
+    },
+    "class_type": "CheckpointLoaderSimple",
+    "_meta": {
+      "title": "CheckpointLoaderSimple"
+    }
+  },
+  "5": {
+    "inputs": {
+      "width": 832,
+      "height": 1136,
+      "batch_size": 9
+    },
+    "class_type": "EmptyLatentImage",
+    "_meta": {
+      "title": "EmptyLatentImage"
+    }
+  },
+  "6": {
+    "inputs": {
+      "clip": [
+        "13",
+        1
+      ],
+      "text": "full-body shot, topless, masterpiece, excellent quality, realistic"
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "CLIPTextEncode"
+    }
+  },
+  "7": {
+    "inputs": {
+      "clip": [
+        "13",
+        1
+      ],
+      "text": ""
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "CLIPTextEncode"
+    }
+  },
+  "8": {
+    "inputs": {
+      "samples": [
+        "3",
+        0
+      ],
+      "vae": [
+        "4",
+        2
+      ]
+    },
+    "class_type": "VAEDecode",
+    "_meta": {
+      "title": "VAEDecode"
+    }
+  },
+  "13": {
+    "inputs": {
+      "model": [
+        "36",
+        0
+      ],
+      "clip": [
+        "4",
+        1
+      ]
+    },
+    "class_type": "Power Lora Loader (rgthree)",
+    "_meta": {
+      "title": "Power Lora Loader (rgthree)"
+    }
+  },
+  "14": {
+    "inputs": {
+      "image": [
+        "34",
+        0
+      ],
+      "upscale_model": "4x_NMKD-Superscale-SP_178000_G.pth",
+      "mode": "rescale",
+      "rescale_factor": 1.4000000000000001,
+      "resize_width": 1024,
+      "resampling_method": "lanczos",
+      "supersample": "true",
+      "rounding_modulus": 64
+    },
+    "class_type": "CR Upscale Image",
+    "_meta": {
+      "title": "CR Upscale Image"
+    }
+  },
+  "15": {
+    "inputs": {
+      "pixels": [
+        "14",
+        0
+      ],
+      "vae": [
+        "4",
+        2
+      ]
+    },
+    "class_type": "VAEEncode",
+    "_meta": {
+      "title": "VAEEncode"
+    }
+  },
+  "16": {
+    "inputs": {
+      "model": [
+        "13",
+        0
+      ],
+      "positive": [
+        "6",
+        0
+      ],
+      "negative": [
+        "7",
+        0
+      ],
+      "latent_image": [
+        "15",
+        0
+      ],
+      "seed": [
+        "19",
+        0
+      ],
+      "steps": 4,
+      "cfg": 0.9,
+      "sampler_name": "ddpm",
+      "scheduler": "karras",
+      "denoise": 0.45
+    },
+    "class_type": "KSampler",
+    "_meta": {
+      "title": "KSampler"
+    }
+  },
+  "17": {
+    "inputs": {
+      "samples": [
+        "16",
+        0
+      ],
+      "vae": [
+        "4",
+        2
+      ]
+    },
+    "class_type": "VAEDecode",
+    "_meta": {
+      "title": "VAEDecode"
+    }
+  },
+  "18": {
+    "inputs": {
+      "images": [
+        "17",
+        0
+      ]
+    },
+    "class_type": "PreviewImage",
+    "_meta": {
+      "title": "PreviewImage"
+    }
+  },
+  "19": {
+    "inputs": {
+      "seed": 796703379031355
+    },
+    "class_type": "easy seed",
+    "_meta": {
+      "title": "easy seed"
+    }
+  },
+  "21": {
+    "inputs": {
+      "images": [
+        "8",
+        0
+      ]
+    },
+    "class_type": "PreviewImage",
+    "_meta": {
+      "title": "PreviewImage"
+    }
+  },
+  "32": {
+    "inputs": {
+      "provider": "CUDA"
+    },
+    "class_type": "IPAdapterInsightFaceLoader",
+    "_meta": {
+      "title": "IPAdapterInsightFaceLoader"
+    }
+  },
+  "33": {
+    "inputs": {
+      "clip_name": "sd1.5_clipvision.safetensors"
+    },
+    "class_type": "CLIPVisionLoader",
+    "_meta": {
+      "title": "CLIPVisionLoader"
+    }
+  },
+  "34": {
+    "inputs": {
+      "image": "VhjmHRgWfYBO1IyTxpfGG_iiffQJwj.png"
+    },
+    "class_type": "LoadImage",
+    "_meta": {
+      "title": "LoadImage"
+    }
+  },
+  "35": {
+    "inputs": {
+      "model": [
+        "4",
+        0
+      ],
+      "preset": "FACEID PLUS V2",
+      "lora_strength": 0.5,
+      "provider": "CPU"
+    },
+    "class_type": "IPAdapterUnifiedLoaderFaceID",
+    "_meta": {
+      "title": "IPAdapterUnifiedLoaderFaceID"
+    }
+  },
+  "36": {
+    "inputs": {
+      "model": [
+        "35",
+        0
+      ],
+      "ipadapter": [
+        "35",
+        1
+      ],
+      "image": [
+        "34",
+        0
+      ],
+      "clip_vision": [
+        "33",
+        0
+      ],
+      "insightface": [
+        "32",
+        0
+      ],
+      "weight": 1,
+      "weight_faceidv2": 1,
+      "weight_type": "linear",
+      "combine_embeds": "average",
+      "start_at": 0,
+      "end_at": 1,
+      "embeds_scaling": "K+V"
+    },
+    "class_type": "IPAdapterFaceID",
+    "_meta": {
+      "title": "IPAdapterFaceID"
+    }
+  }
+}
