@@ -121,6 +121,6 @@ RUN hf download gemasai/4x_NMKD-Superscale-SP_178000_G \
     --local-dir /comfyui/models/upscale_models
 
 
-RUN python --version && pip --version && pip install -v insightface==0.7.3
+RUN python3 -m pip install --no-cache-dir insightface==0.7.3
 
-RUN python --version && pip --version && pip install -v onnxruntime-gpu
+RUN python3 -m pip install --no-cache-dir onnxruntime-gpu==1.28.0
