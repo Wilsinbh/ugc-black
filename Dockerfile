@@ -122,3 +122,5 @@ RUN hf download gemasai/4x_NMKD-Superscale-SP_178000_G \
 
 
 RUN pip install --no-cache-dir insightface==0.7.3
+
+RUN pip install --no-cache-dir onnxruntime-gpu
