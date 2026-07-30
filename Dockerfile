@@ -1,23 +1,125 @@
-# clean base image containing only comfyui, comfy-cli and comfyui-manager
 FROM runpod/worker-comfyui:5.8.4-base
 
-# build-time tokens for gated downloads — never baked into final image.
-# pass via: docker build --build-arg HF_TOKEN=$HF_TOKEN ...
-ARG HF_TOKEN=""
+ENV DEBIAN_FRONTEND=noninteractive
 
-# install custom nodes into comfyui
-RUN comfy node install --exit-on-fail comfyui-easy-use@1.3.6 --mode remote || (echo "WARN: comfyui-easy-use@1.3.6 unavailable in registry, falling back to latest" >&2 && comfy node install --exit-on-fail comfyui-easy-use --mode remote)
-RUN comfy node install --exit-on-fail comfyui_ipadapter_plus@2.0.0 || (echo "WARN: comfyui_ipadapter_plus@2.0.0 unavailable in registry, falling back to latest" >&2 && comfy node install --exit-on-fail comfyui_ipadapter_plus)
-RUN git clone https://github.com/rgthree/rgthree-comfy /comfyui/custom_nodes/rgthree-comfy && cd /comfyui/custom_nodes/rgthree-comfy && (git checkout 6b76ee6f2c5a007710b5a16f97c94330d6ecc871 2>/dev/null || (git fetch origin 6b76ee6f2c5a007710b5a16f97c94330d6ecc871 --depth=1 && git checkout 6b76ee6f2c5a007710b5a16f97c94330d6ecc871) || echo "WARN: commit 6b76ee6f2c5a007710b5a16f97c94330d6ecc871 unreachable in https://github.com/rgthree/rgthree-comfy, falling back to default branch HEAD")
-RUN git clone https://github.com/Suzie1/ComfyUI_Comfyroll_CustomNodes /comfyui/custom_nodes/ComfyUI_Comfyroll_CustomNodes && cd /comfyui/custom_nodes/ComfyUI_Comfyroll_CustomNodes && (git checkout d78b780ae43fcf8c6b7c6505e6ffb4584281ceca 2>/dev/null || (git fetch origin d78b780ae43fcf8c6b7c6505e6ffb4584281ceca --depth=1 && git checkout d78b780ae43fcf8c6b7c6505e6ffb4584281ceca) || echo "WARN: commit d78b780ae43fcf8c6b7c6505e6ffb4584281ceca unreachable in https://github.com/Suzie1/ComfyUI_Comfyroll_CustomNodes, falling back to default branch HEAD")
+# -----------------------------------------------------------------------------
+# Hugging Face
+# -----------------------------------------------------------------------------
 
-# download models into comfyui
-RUN BACKOFFS="10 20 30 60 90" && for i in 1 2 3 4 5; do HF_TOKEN=$HF_TOKEN comfy model download --url 'https://huggingface.co/h94/IP-Adapter/resolve/main/models/image_encoder/model.safetensors' --relative-path models/clip_vision --filename 'sd1.5_clipvision.safetensors' && break; if [ $i -eq 5 ]; then echo "model-download failed after 5 attempts" >&2; exit 1; fi; SLEEP=$(echo $BACKOFFS | cut -d ' ' -f $i) && echo "model-download attempt $i failed; retrying in $SLEEP seconds" >&2; sleep $SLEEP; done
-RUN BACKOFFS="10 20 30 60 90" && for i in 1 2 3 4 5; do HF_TOKEN=$HF_TOKEN comfy model download --url 'https://huggingface.co/gemasai/4x_NMKD-Superscale-SP_178000_G/resolve/main/4x_NMKD-Superscale-SP_178000_G.pth' --relative-path models/Unknown --filename '4x_NMKD-Superscale-SP_178000_G.pth' && break; if [ $i -eq 5 ]; then echo "model-download failed after 5 attempts" >&2; exit 1; fi; SLEEP=$(echo $BACKOFFS | cut -d ' ' -f $i) && echo "model-download attempt $i failed; retrying in $SLEEP seconds" >&2; sleep $SLEEP; done
-RUN BACKOFFS="10 20 30 60 90" && for i in 1 2 3 4 5; do HF_TOKEN=$HF_TOKEN comfy model download --url 'https://huggingface.co/wilsinsantos/wsn/resolve/main/epicrealismXL_vxviLastfameDMD2.safetensors' --relative-path models/checkpoints --filename 'epicrealismXL_vxviLastfameDMD2.safetensors' && break; if [ $i -eq 5 ]; then echo "model-download failed after 5 attempts" >&2; exit 1; fi; SLEEP=$(echo $BACKOFFS | cut -d ' ' -f $i) && echo "model-download attempt $i failed; retrying in $SLEEP seconds" >&2; sleep $SLEEP; done
+RUN pip install --no-cache-dir "huggingface_hub[cli]"
 
-# copy all input data (like images or videos) into comfyui (uncomment and adjust if needed)
-# COPY input/ /comfyui/input/
+ENV HF_TOKEN=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
 
-# user-provided inputs override the auto-generated placeholders above.
-RUN wget --progress=dot:giga -O '/comfyui/input/VhjmHRgWfYBO1IyTxpfGG_iiffQJwj.png' "https://cool-anteater-319.convex.cloud/api/storage/26946503-ff60-4ba7-81ba-6c40110cf6e5"
+RUN hf auth login --token ${HF_TOKEN}
+
+# -----------------------------------------------------------------------------
+# Custom Nodes
+# -----------------------------------------------------------------------------
+
+RUN git clone https://github.com/yolain/ComfyUI-Easy-Use.git \
+    /comfyui/custom_nodes/comfyui-easy-use
+
+RUN git clone https://github.com/cubiq/ComfyUI_IPAdapter_plus.git \
+    /comfyui/custom_nodes/comfyui_ipadapter_plus
+
+RUN git clone https://github.com/rgthree/rgthree-comfy.git \
+    /comfyui/custom_nodes/rgthree-comfy
+
+RUN git clone https://github.com/Suzie1/ComfyUI_Comfyroll_CustomNodes.git \
+    /comfyui/custom_nodes/ComfyUI_Comfyroll_CustomNodes
+
+# -----------------------------------------------------------------------------
+# Install requirements
+# -----------------------------------------------------------------------------
+
+RUN find /comfyui/custom_nodes -name requirements.txt \
+    -exec pip install --no-cache-dir -r {} \;
+
+# -----------------------------------------------------------------------------
+# Checkpoint
+# -----------------------------------------------------------------------------
+
+RUN hf download wilsinsantos/wsn \
+    epicrealismXL_vxviLastfameDMD2.safetensors \
+    --local-dir /comfyui/models/checkpoints
+
+# -----------------------------------------------------------------------------
+# CLIP Vision
+# -----------------------------------------------------------------------------
+
+RUN hf download h94/IP-Adapter \
+    models/image_encoder/model.safetensors \
+    --local-dir /tmp/clip_sd15 && \
+    mv /tmp/clip_sd15/models/image_encoder/model.safetensors \
+    /comfyui/models/clip_vision/CLIP-ViT-H-14-laion2B-s32B-b79K.safetensors && \
+    rm -rf /tmp/clip_sd15
+
+RUN hf download h94/IP-Adapter \
+    sdxl_models/image_encoder/model.safetensors \
+    --local-dir /tmp/clip_sdxl && \
+    mv /tmp/clip_sdxl/sdxl_models/image_encoder/model.safetensors \
+    /comfyui/models/clip_vision/CLIP-ViT-bigG-14-laion2B-39B-b160k.safetensors && \
+    rm -rf /tmp/clip_sdxl
+
+# -----------------------------------------------------------------------------
+# IPAdapter
+# -----------------------------------------------------------------------------
+
+RUN hf download h94/IP-Adapter-FaceID \
+    ip-adapter-faceid-plusv2_sd15.bin \
+    --local-dir /comfyui/models/ipadapter
+
+RUN hf download h94/IP-Adapter-FaceID \
+    ip-adapter-faceid-plusv2_sdxl.bin \
+    --local-dir /comfyui/models/ipadapter
+
+# -----------------------------------------------------------------------------
+# LoRAs
+# -----------------------------------------------------------------------------
+
+RUN hf download h94/IP-Adapter-FaceID \
+    ip-adapter-faceid-plusv2_sd15_lora.safetensors \
+    --local-dir /comfyui/models/loras
+
+RUN hf download h94/IP-Adapter-FaceID \
+    ip-adapter-faceid-plusv2_sdxl_lora.safetensors \
+    --local-dir /comfyui/models/loras
+
+# -----------------------------------------------------------------------------
+# InsightFace Buffalo_L
+# -----------------------------------------------------------------------------
+
+RUN mkdir -p /comfyui/models/insightface/models/buffalo_l
+
+RUN hf download yolkailtd/face-swap-models \
+    insightface/models/buffalo_l/1k3d68.onnx \
+    --local-dir /tmp/buffalo
+
+RUN hf download yolkailtd/face-swap-models \
+    insightface/models/buffalo_l/2d106det.onnx \
+    --local-dir /tmp/buffalo
+
+RUN hf download yolkailtd/face-swap-models \
+    insightface/models/buffalo_l/det_10g.onnx \
+    --local-dir /tmp/buffalo
+
+RUN hf download yolkailtd/face-swap-models \
+    insightface/models/buffalo_l/genderage.onnx \
+    --local-dir /tmp/buffalo
+
+RUN hf download yolkailtd/face-swap-models \
+    insightface/models/buffalo_l/w600k_r50.onnx \
+    --local-dir /tmp/buffalo
+
+RUN cp -r /tmp/buffalo/insightface/models/buffalo_l/* \
+    /comfyui/models/insightface/models/buffalo_l/
+
+RUN rm -rf /tmp/buffalo
+
+# -----------------------------------------------------------------------------
+# Upscaler
+# -----------------------------------------------------------------------------
+
+RUN hf download gemasai/4x_NMKD-Superscale-SP_178000_G \
+    4x_NMKD-Superscale-SP_178000_G.pth \
+    --local-dir /comfyui/models/upscale_models
