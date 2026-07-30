@@ -119,3 +119,6 @@ RUN rm -rf /tmp/buffalo
 RUN hf download gemasai/4x_NMKD-Superscale-SP_178000_G \
     4x_NMKD-Superscale-SP_178000_G.pth \
     --local-dir /comfyui/models/upscale_models
+
+
+RUN pip install --no-cache-dir insightface==0.7.3
