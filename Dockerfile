@@ -120,11 +120,16 @@ RUN hf download gemasai/4x_NMKD-Superscale-SP_178000_G \
     4x_NMKD-Superscale-SP_178000_G.pth \
     --local-dir /comfyui/models/upscale_models
 
-RUN python3 --version
-RUN python3 -m pip --version
-RUN uname -a
-RUN df -h
-RUN python3 -m pip install -vvv insightface==0.7.3 > /tmp/pip.log 2>&1 || \
-    (cat /tmp/pip.log && exit 1)
+RUN which g++
+RUN g++ --version
 
+
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        build-essential \
+        g++ \
+        gcc \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN python3 -m pip install --no-cache-dir insightface==0.7.3
 RUN python3 -m pip install --no-cache-dir onnxruntime-gpu==1.28.0
