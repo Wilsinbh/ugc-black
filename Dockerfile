@@ -10,7 +10,7 @@ RUN pip install --no-cache-dir "huggingface_hub[cli]"
 
 ENV HF_TOKEN=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
 
-RUN hf auth login --token ${HF_TOKEN}
+RUN hf --version
 
 # -----------------------------------------------------------------------------
 # Custom Nodes
