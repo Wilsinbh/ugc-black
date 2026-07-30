@@ -8,7 +8,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 RUN pip install --no-cache-dir "huggingface_hub[cli]"
 
-ENV HF_TOKEN=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
+ENV HF_TOKEN=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
 
 RUN huggingface-cli login --token ${HF_TOKEN}
 # -----------------------------------------------------------------------------
